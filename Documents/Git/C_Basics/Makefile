@@ -1,0 +1,41 @@
+CC = gcc
+
+BUILD_DIR = ./build
+
+SRC_FILE = hello_world.c
+
+PREPROCESSED_FILE = hello_world.i
+
+OBJ_FILE = $(BUILD_DIR)/hello_world.o
+
+COMPILER_FILE = $(BUILD_DIR)/hello_world.s
+
+EXE_FILE = $(BUILD_DIR)/hello_world.exe
+
+
+
+all: $(BUILD_DIR) $(PREPROCESSED_FILE) $(COMPILER_FILE) $(OBJ_FILE) $(EXE_FILE)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(EXE_FILE): $(OBJ_FILE)
+	$(CC) $(OBJ_FILE) -o $(EXE_FILE)
+
+$(PREPROCESSED_FILE): $(SRC_FILE)
+	$(CC) -E -P $(SRC_FILE) -o $(PREPROCESSED_FILE)
+
+$(COMPILER_FILE): $(PREPROCESSED_FILE)
+	$(CC) -S $(PREPROCESSED_FILE) -o $(COMPILER_FILE)
+
+$(OBJ_FILE): $(COMPILER_FILE)
+	$(CC) -c $(COMPILER_FILE) -o $(OBJ_FILE)
+
+
+run: $(EXE_FILE)
+	./$(EXE_FILE)
+
+clean:
+	rm -f -r $(BUILD_DIR) $(PREPROCESSED_FILE) $(COMPILER_FILE) $(OBJ_FILE) $(EXE_FILE)
+
+
