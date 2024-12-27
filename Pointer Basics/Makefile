@@ -1,0 +1,36 @@
+CC = gcc
+
+BUILD_DIR = ./build
+
+SRC_FILE = pointer_basics.c
+
+PREPROCESSED_FILE = pointer_basics.i
+
+OBJ_FILE = $(BUILD_DIR)/pointer_basics.o
+
+ASSEMBLY_FILE = $(BUILD_DIR)/pointer_basics.s
+
+EXECUTION_FILE = $(BUILD_DIR)/pointer_basics.exe
+
+all: $(BUILD_DIR) $(PREPROCESSED_FILE) $(ASSEMBLY_FILE) $(OBJ_FILE) $(EXECUTION_FILE)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(EXECUTION_FILE): $(OBJ_FILE)
+	$(CC) $(OBJ_FILE) -o $(EXECUTION_FILE)
+
+$(PREPROCESSED_FILE): $(SRC_FILE)
+	$(CC) -E -P $(SRC_FILE) -o $(PREPROCESSED_FILE)
+
+$(ASSEMBLY_FILE): $(PREPROCESSED_FILE)
+	$(CC) -S $(PREPROCESSED_FILE) -o $(ASSEMBLY_FILE)
+
+$(OBJ_FILE): $(ASSEMBLY_FILE)
+	$(CC) -c $(ASSEMBLY_FILE) -o $(OBJ_FILE)
+
+run: $(EXECUTION_FILE)
+		./$(EXECUTION_FILE)
+
+clean:
+	rm -f -r $(BUILD_DIR) $(PREPROCESSED_FILE) $(ASSEMBLY_FILE) $(OBJ_FILE) $(EXECUTION_FILE)
